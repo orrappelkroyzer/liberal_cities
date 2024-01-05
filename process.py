@@ -282,7 +282,10 @@ def news_bar_chart(df):
             showlegend=False)
     fix_and_write(fig, f"Scores_News_Source")
 
-iv = ["Position on Economy LR", 'Income', 'Outlook on Israel (Combined Score)', 'Expectations from Municipaliity']
+iv = ["Position on Economy LR", 
+      'Income', 
+      'Outlook on Israel (Combined Score)', 
+      'Expectations from Municipaliity']
 
 def scatter_plots(df):
     logger.info("scatter_plots")
@@ -340,6 +343,18 @@ def multivariate_regression(df):
                     filename='multivariate_regression',
                     height_factor=1.5)
 
+def multivariate_regression_partial_iv(df):
+    logger.info("multivariate_regression")
+    coeffs_analysis(df=df, 
+                    output_dir=config['output_dir'],
+                    dependent_variables=['Combined Score'],
+                    independent_variables=['Voted for Coalition', 'Income', 
+                                            'Outlook on Israel (Combined Score)',  
+                                            'Ability to influence Government Policy'],
+                    categoric_independent_variables= ['Ethnicity', 'Religiosity', 'Childhood Residence'],
+                    filename='multivariate_regression',
+                    height_factor=1.5)
+
 def main():
     df = read_input()
     df = sanity_check(df)
@@ -347,11 +362,12 @@ def main():
     t_df = df[df['consistency_score_soft_diffs'] <= df['consistency_score_soft_diffs'].quantile(0.9)]
     t_df = conservatibe_liberal_tal_score(t_df)
     t_df.to_excel(Path(config['output_dir']) / "with_scores.xlsx")
+    
     # bar_charts(t_df)
     # news_bar_chart(t_df)
     # scatter_plots(t_df)
     # multivariate_regression(t_df)
-    
+    multivariate_regression_partial_iv(t_df)
 
 
 if __name__ == "__main__":
