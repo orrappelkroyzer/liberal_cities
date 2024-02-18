@@ -348,12 +348,27 @@ def multivariate_regression_partial_iv(df):
     coeffs_analysis(df=df, 
                     output_dir=config['output_dir'],
                     dependent_variables=['Combined Score'],
-                    independent_variables=['Voted for Coalition', 'Income', 
-                                            'Outlook on Israel (Combined Score)',  
-                                            'Ability to influence Government Policy'],
-                    categoric_independent_variables= ['Ethnicity', 'Religiosity', 'Childhood Residence'],
-                    filename='multivariate_regression',
+                    independent_variables=[ 'Outlook on Israel (Combined Score)', 
+                                            'Voted for Coalition', 'Income', 
+                                           ],
+                    categoric_independent_variables= ['Ethnicity', 'Religiosity'],
+                    uninteresting_independent_variables=['const', 'Ethnicity', 'Income'],
+                    filename='multivariate_regression_v1_1',
+                    sort_values=False,
                     height_factor=1.5)
+
+    coeffs_analysis(df=df, 
+                    output_dir=config['output_dir'],
+                    dependent_variables=['Combined Score'],
+                    independent_variables=['Ability to influence Government Policy',
+                                            'Voted for Coalition', 'Income', 
+                                           ],
+                    categoric_independent_variables= ['Ethnicity', 'Religiosity'],
+                    uninteresting_independent_variables=['const', 'Ethnicity', 'Income'],
+                    filename='multivariate_regression_v1_2',
+                    sort_values=False,
+                    height_factor=1.5)
+
 
 def main():
     df = read_input()
@@ -362,7 +377,9 @@ def main():
     t_df = df[df['consistency_score_soft_diffs'] <= df['consistency_score_soft_diffs'].quantile(0.9)]
     t_df = conservatibe_liberal_tal_score(t_df)
     t_df.to_excel(Path(config['output_dir']) / "with_scores.xlsx")
-    
+    t_df = pd.read_excel(Path(config['output_dir']) / "with_scores.xlsx")
+
+
     # bar_charts(t_df)
     # news_bar_chart(t_df)
     # scatter_plots(t_df)
